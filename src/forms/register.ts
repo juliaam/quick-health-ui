@@ -7,21 +7,26 @@ class RegisterForm {
         name: '',
         email: '',
         password: '',
-        password_repeated: '',
+        confirm: '',
     }
-    public validationSchema = z.object({
-        name: z
-            .string()
-            .nonempty('O campo nome é obrigatório')
-            .min(2, 'Mínimo de 2 caracteres')
-            .max(12, 'Máximo de 12 caracteres.'),
-        email: z
-            .string()
-            .nonempty('O campo nome é obrigatório')
-            .email('É necessário que seja um email'),
-        password: z.string().nonempty('O campo nome é obrigatório'),
-        password_repeated: z.string().nonempty('O campo nome é obrigatório'),
-    })
+    public validationSchema = z
+        .object({
+            name: z
+                .string()
+                .nonempty('O campo é obrigatório')
+                .min(2, 'Mínimo de 2 caracteres')
+                .max(12, 'Máximo de 12 caracteres.'),
+            email: z
+                .string()
+                .nonempty('O campo é obrigatório')
+                .email('É necessário que seja um email'),
+            password: z.string().nonempty('O campo é obrigatório'),
+            confirm: z.string().nonempty('O campo é obrigatório'),
+        })
+        .refine((data) => data.password === data.confirm, {
+            message: "Passwords don't match",
+            path: ['confirm'],
+        })
 }
 
 export const registerForm = new RegisterForm()

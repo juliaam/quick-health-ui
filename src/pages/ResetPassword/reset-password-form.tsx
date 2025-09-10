@@ -1,46 +1,49 @@
 import { RHFormInput } from '@/components/forms/rh-form-input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
-import { type RegisterFormValues } from '@/forms/register'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
-import { useNavigate } from '@tanstack/react-router'
-import { loginForm, type LoginFormValues } from '@/forms/login'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
-import { login } from '@/api/authService'
+import {
+    resetPasswordForm,
+    type ResetPasswordFormValues,
+} from '@/forms/reset-password'
+import { resetPassword } from '@/api/authService'
 import { Spinner } from '@/components/ui/spinner'
 
-export const LoginForm = () => {
-    const methods = useForm<LoginFormValues>({
-        defaultValues: loginForm.defaultValues,
-        resolver: zodResolver(loginForm.validationSchema),
+export const ResetPasswordForm = () => {
+    const methods = useForm<ResetPasswordFormValues>({
+        defaultValues: resetPasswordForm.defaultValues,
+        resolver: zodResolver(resetPasswordForm.validationSchema),
     })
 
     return (
         <FormProvider {...methods}>
-            <LoginFormUI />
+            <ResetPasswordFormUI />
         </FormProvider>
     )
 }
 
-export const LoginFormUI = () => {
+export const ResetPasswordFormUI = () => {
     const navigate = useNavigate()
     const {
         handleSubmit,
         formState: { isSubmitting },
-    } = useFormContext<RegisterFormValues>()
+    } = useFormContext<ResetPasswordFormValues>()
+    const search: { token?: string } = useSearch({ from: '/reset-password' })
 
-    const onSubmit = async (data: RegisterFormValues) => {
+    const onSubmit = async (data: ResetPasswordFormValues) => {
+        if (!search.token) return
+
         try {
-            const response = await login({
-                email: data.email,
-                password: data.password,
+            await resetPassword({
+                newPassword: data.newPassword,
+                token: search.token,
             })
 
-            if (!response.access_token) throw new Error()
-
-            localStorage.setItem('auth-token', response.access_token)
-            navigate({ to: '/dashboard' })
+            toast.success('Senha alterada com sucesso!')
+            navigate({ to: '/login' })
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
                 if (error.response?.data.message) {
@@ -55,17 +58,13 @@ export const LoginFormUI = () => {
         navigate({ to: '/register' })
     }
 
-    const redirectToForgotPassword = () => {
-        navigate({ to: '/forgot-password' })
-    }
-
     return (
         <form
             className="h-full bg-white rounded-l-md w-auto py-20 px-24 text-center"
             onSubmit={handleSubmit(onSubmit)}
         >
             <div className="flex flex-col gap-y-2">
-                <span className="text-4xl">Login</span>
+                <span className="text-4xl">Esqueci a senha</span>
                 <div className="flex gap-x-1">
                     <span className="text-gray-600">Não possui uma conta?</span>
                     <span
@@ -77,16 +76,18 @@ export const LoginFormUI = () => {
                 </div>
             </div>
             <div className="flex flex-col gap-y-5 mt-16">
-                <RHFormInput name="email" label="Email" />
-                <RHFormInput name="password" label="Senha" type="password" />
-                <span
-                    className="self-end -my-3 text-sm text-gray-600 cursor-pointer"
-                    onClick={redirectToForgotPassword}
-                >
-                    Esqueceu a senha?
-                </span>
+                <RHFormInput
+                    name="newPassword"
+                    label="Nova senha"
+                    type="password"
+                />
+                <RHFormInput
+                    name="confirm"
+                    label="Repita a senha"
+                    type="password"
+                />
                 <Button type="submit" className="mt-8">
-                    Login {isSubmitting && <Spinner />}
+                    Alterar a senha {isSubmitting && <Spinner />}
                 </Button>
             </div>
         </form>

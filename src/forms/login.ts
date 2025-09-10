@@ -8,8 +8,8 @@ class LoginForm {
         password: '',
     }
     public validationSchema = z.object({
-        email: z.string().nonempty('O campo nome é obrigatório'),
-        password: z.string().nonempty('O campo nome é obrigatório'),
+        email: z.string().nonempty('O campo é obrigatório'),
+        password: z.string().nonempty('O campo é obrigatório'),
     })
 }
 

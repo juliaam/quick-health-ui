@@ -1,3 +1,4 @@
+import { redirect } from '@tanstack/react-router'
 import api from './base'
 
 export type RegisterDto = {
@@ -11,6 +12,15 @@ export type LoginDto = {
     password: string
 }
 
+export type ForgotPasswordDto = {
+    email: string
+}
+
+export type ResetPasswordDto = {
+    newPassword: string
+    token: string
+}
+
 export const register = async (data: RegisterDto) => {
     const response = await api.post('/auth/register', data)
     return response.data
@@ -21,12 +31,25 @@ export const login = async (data: LoginDto) => {
     return response.data
 }
 
+export const forgotPassword = async (data: ForgotPasswordDto) => {
+    const response = await api.post('/auth/forgot-password', data)
+    return response.data
+}
+
+export const resetPassword = async (data: ResetPasswordDto) => {
+    const response = await api.post('/auth/reset-password', data)
+    return response.data
+}
+
 export const validateToken = async () => {
     try {
+        const token = localStorage.getItem('auth-token')
+
+        if (!token) throw redirect({ to: '/login' })
+
         await api.get('/auth/validate-token')
         return true
-    } catch (err) {
-        console.log('fui jogado pra ca')
-        console.error(err)
+    } catch (_er) {
+        throw redirect({ to: '/login' })
     }
 }

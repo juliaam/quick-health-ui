@@ -1,46 +1,42 @@
 import { RHFormInput } from '@/components/forms/rh-form-input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
-import { registerForm, type RegisterFormValues } from '@/forms/register'
-import {
-    FormProvider,
-    useForm,
-    useFormContext,
-    useWatch,
-} from 'react-hook-form'
+import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { useNavigate } from '@tanstack/react-router'
-import { register } from '@/api/authService'
+import { forgotPassword as forgotPasswordRequest } from '@/api/authService'
+
+import {
+    forgotPassword,
+    type ForgotPasswordValues,
+} from '@/forms/forgot-password'
 import { toast } from 'sonner'
 import { AxiosError } from 'axios'
 import { Spinner } from '@/components/ui/spinner'
 
-export const RegisterForm = () => {
-    const methods = useForm<RegisterFormValues>({
-        defaultValues: registerForm.defaultValues,
-        resolver: zodResolver(registerForm.validationSchema),
+export const ForgotPasswordForm = () => {
+    const methods = useForm<ForgotPasswordValues>({
+        defaultValues: forgotPassword.defaultValues,
+        resolver: zodResolver(forgotPassword.validationSchema),
     })
 
     return (
         <FormProvider {...methods}>
-            <RegisterFormUI />
+            <ForgotPasswordFormUI />
         </FormProvider>
     )
 }
 
-export const RegisterFormUI = () => {
+export const ForgotPasswordFormUI = () => {
     const navigate = useNavigate()
     const {
         handleSubmit,
         formState: { isSubmitting },
-    } = useFormContext<RegisterFormValues>()
-    const password = useWatch({ name: 'password' })
+    } = useFormContext<ForgotPasswordValues>()
 
-    const onSubmit = async (data: RegisterFormValues) => {
+    const onSubmit = async (data: ForgotPasswordValues) => {
         try {
-            const response = await register({
+            const response = await forgotPasswordRequest({
                 email: data.email,
-                name: data.name,
-                password: data.password,
             })
 
             if (!response.access_token) throw new Error()
@@ -58,8 +54,8 @@ export const RegisterFormUI = () => {
         }
     }
 
-    const redirectToLogin = () => {
-        navigate({ to: '/login' })
+    const redirectToRegister = () => {
+        navigate({ to: '/register' })
     }
 
     return (
@@ -67,31 +63,22 @@ export const RegisterFormUI = () => {
             className="h-full bg-white rounded-l-md w-auto py-20 px-24 text-center"
             onSubmit={handleSubmit(onSubmit)}
         >
-            <div className="flex flex-col gap-y-2">
-                <span className="text-4xl">Registro</span>
+            <div className="flex flex-col gap-y-2 items-center">
+                <span className="text-4xl">Esqueci a senha</span>
                 <div className="flex gap-x-1">
-                    <span className="text-gray-600">Já possui uma conta?</span>
+                    <span className="text-gray-600">Não possui uma conta?</span>
                     <span
                         className="text-primary cursor-pointer"
-                        onClick={redirectToLogin}
+                        onClick={redirectToRegister}
                     >
-                        Login
+                        Registro
                     </span>
                 </div>
             </div>
             <div className="flex flex-col gap-y-5 mt-16">
-                <RHFormInput name="name" label="Nome" />
                 <RHFormInput name="email" label="Email" />
-                <RHFormInput name="password" label="Senha" type="password" />
-                {password && (
-                    <RHFormInput
-                        name="confirm"
-                        label="Repita a senha"
-                        type="password"
-                    />
-                )}
                 <Button type="submit" className="mt-8">
-                    Registrar
+                    Enviar email
                     {isSubmitting && <Spinner />}
                 </Button>
             </div>
