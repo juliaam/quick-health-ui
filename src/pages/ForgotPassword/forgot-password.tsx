@@ -35,20 +35,17 @@ export const ForgotPasswordFormUI = () => {
 
     const onSubmit = async (data: ForgotPasswordValues) => {
         try {
-            const response = await forgotPasswordRequest({
+            await forgotPasswordRequest({
                 email: data.email,
             })
-
-            if (!response.access_token) throw new Error()
-
-            localStorage.setItem('auth-token', response.access_token)
-            navigate({ to: '/dashboard' })
+            toast('Veja sua caixa de entrada')
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
                 if (error.response?.data.message) {
                     toast(error.response.data.message)
                 }
             } else {
+                console.error(error)
                 toast('Houve um erro!')
             }
         }

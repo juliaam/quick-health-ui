@@ -50,6 +50,7 @@ export const ResetPasswordFormUI = () => {
                     toast(error.response.data.message)
                 }
             } else {
+                console.error(error)
                 toast('Houve um erro!')
             }
         }
