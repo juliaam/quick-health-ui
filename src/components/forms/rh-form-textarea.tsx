@@ -11,9 +11,9 @@ import {
   FormMessage,
   useFormField,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { Textarea } from '../ui/textarea'
 
-type FormInputProps<
+type FormTextareaProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
@@ -25,7 +25,7 @@ type FormInputProps<
   type?: string
 }
 
-export function RHFormInput<
+export function RHFormTextarea<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
@@ -34,8 +34,7 @@ export function RHFormInput<
   placeholder = '',
   required = false,
   disabled = false,
-  type = 'text',
-}: FormInputProps<TFieldValues, TName>) {
+}: FormTextareaProps<TFieldValues, TName>) {
   const { control } = useFormContext<TFieldValues>()
   const { formItemId } = useFormField()
 
@@ -51,12 +50,11 @@ export function RHFormInput<
             </FormLabel>
           )}
           <FormControl>
-            <Input
+            <Textarea
               id={formItemId}
-              {...field}
               placeholder={placeholder}
               disabled={disabled}
-              type={type}
+              {...field}
             />
           </FormControl>
           <FormMessage />

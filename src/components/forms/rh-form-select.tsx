@@ -9,11 +9,10 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-  useFormField,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { SelectApp, type Option } from '../ui/select-app'
 
-type FormInputProps<
+type FormSelectProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
@@ -23,21 +22,21 @@ type FormInputProps<
   required?: boolean
   disabled?: boolean
   type?: string
+  options: Option[]
 }
 
-export function RHFormInput<
+export function RHFormSelect<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
   name,
   label,
-  placeholder = '',
+  options,
+  placeholder,
   required = false,
   disabled = false,
-  type = 'text',
-}: FormInputProps<TFieldValues, TName>) {
+}: FormSelectProps<TFieldValues, TName>) {
   const { control } = useFormContext<TFieldValues>()
-  const { formItemId } = useFormField()
 
   return (
     <FormField
@@ -51,13 +50,12 @@ export function RHFormInput<
             </FormLabel>
           )}
           <FormControl>
-            <Input
-              id={formItemId}
-              {...field}
+            <SelectApp
+              options={options}
               placeholder={placeholder}
               disabled={disabled}
-              type={type}
-            />
+              {...field}
+            ></SelectApp>
           </FormControl>
           <FormMessage />
         </FormItem>

@@ -1,11 +1,11 @@
 import { RegisterForm } from './register-form'
 
 export function Register() {
-    return (
-        <div className="flex-1 bg-[url('public/background.png')] bg-no-repeat bg-center bg-cover size-full bg-black">
-            <div className="size-full flex justify-end">
-                <RegisterForm />
-            </div>
-        </div>
-    )
+  return (
+    <div className="size-full flex-1 bg-black bg-[url('public/background.png')] bg-cover bg-center bg-no-repeat">
+      <div className="flex size-full justify-end">
+        <RegisterForm />
+      </div>
+    </div>
+  )
 }

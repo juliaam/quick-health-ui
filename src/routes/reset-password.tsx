@@ -2,9 +2,9 @@ import { ResetPassword } from '@/pages/ResetPassword'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/reset-password')({
-    component: RouteComponent,
+  component: RouteComponent,
 })
 
 function RouteComponent() {
-    return <ResetPassword />
+  return <ResetPassword />
 }
