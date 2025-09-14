@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { DashboardCard } from '@/components/dashboard-card'
 import { RHFormInput } from '@/components/forms/rh-form-input'
 import { RHFormSelect } from '@/components/forms/rh-form-select'
@@ -11,6 +12,8 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Save, User } from 'lucide-react'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
+
+export const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
 
 export const ClinicalInformation = () => {
   return (
@@ -45,9 +48,27 @@ export const ClinicalInformationUI = () => {
       <div className="grid grid-cols-2 gap-x-16 gap-y-4">
         <RHFormInput name="name" label="Nome" />
         <RHFormInput name="last_name" label="Sobrenome" />
-        <RHFormSelect name="gender_sex" label="Gênero" options={[]} />
+        <RHFormSelect
+          name="gender_sex"
+          label="Gênero"
+          options={Object.keys(GenderSexEnum.enum).map((gender) => ({
+            label: GenderSexEnum.getLabel(
+              gender as keyof typeof GenderSexEnum.enum
+            ),
+            value: gender,
+          }))}
+        />
         <RHFormInput name="emergency_contact" label="Contato de emergência" />
-        <RHFormSelect name="blood_type" label="Tipo sanguíneo" options={[]} />
+        <RHFormSelect
+          name="blood_type"
+          label="Tipo sanguíneo"
+          options={bloodTypes.map((bt) => {
+            return {
+              label: bt,
+              value: bt,
+            }
+          })}
+        />
       </div>
       <div className="mt-16 grid grid-cols-2 gap-x-16 gap-y-4">
         <RHFormTextarea name="medicines_used" label="Medicamentos utilizados" />

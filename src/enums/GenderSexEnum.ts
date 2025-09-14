@@ -1,7 +1,7 @@
 export class GenderSexEnum {
   public static readonly enum = {
-    female: 'FEMALE',
-    male: 'MALE',
+    female: 'female',
+    male: 'male',
   } as const
 
   private static readonly label = {

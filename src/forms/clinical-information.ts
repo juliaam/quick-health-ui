@@ -10,7 +10,7 @@ class ClinicalInformationForm {
     last_name: '',
     gender_sex: 'female',
     emergency_contact: '',
-    blood_type: '',
+    blood_type: 'A+',
     alergy: '',
     medicines_used: '',
     illness: '',
@@ -18,11 +18,11 @@ class ClinicalInformationForm {
   }
 
   public validationSchema = z.object({
-    name: z.string(),
-    last_name: z.string(),
+    name: z.string().nonempty('Esse campo é obrigatório'),
+    last_name: z.string().nonempty('Esse campo é obrigatório'),
     gender_sex: z.enum(['male', 'female']),
-    emergency_contact: z.string(),
-    blood_type: z.string(),
+    emergency_contact: z.string().nonempty('Esse campo é obrigatório').max(11),
+    blood_type: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
     alergy: z.string(),
     medicines_used: z.string(),
     illness: z.string(),

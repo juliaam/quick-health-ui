@@ -26,7 +26,7 @@ export const SelectApp = ({
   return (
     <Select {...props}>
       <SelectTrigger className="w-full">
-        <SelectValue placeholder={placeholder ?? ''} />
+        <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
         {options.map((option) => (

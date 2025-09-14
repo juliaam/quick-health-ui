@@ -51,6 +51,7 @@ export function RHFormSelect<
           )}
           <FormControl>
             <SelectApp
+              onValueChange={field.onChange}
               options={options}
               placeholder={placeholder}
               disabled={disabled}
