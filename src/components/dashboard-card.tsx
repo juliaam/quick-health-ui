@@ -12,9 +12,9 @@ export const DashboardCard = ({
   children,
 }: DashboardCardProps) => {
   return (
-    <div className="w-full rounded-md">
-      <div className="bg-secondary">
-        <div className="flex items-center gap-1 text-3xl">
+    <div className="w-full overflow-hidden rounded-md bg-white">
+      <div className="bg-secondary px-40 py-8">
+        <div className="flex items-center justify-center gap-1 text-3xl">
           {titleIcon} {titleText}
         </div>
       </div>
