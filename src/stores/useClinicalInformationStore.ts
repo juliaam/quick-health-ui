@@ -22,7 +22,7 @@ export type ClinicalInformationView = {
 export type UseClinicalInformationStore = {
   data: ClinicalInformationView | null
   get: (
-    clinical_information_id: string | undefined,
+    clinical_information_id: number | undefined,
     acess_key: string
   ) => Promise<void>
 }
@@ -31,7 +31,7 @@ export const useClinicalInformationStore = create<UseClinicalInformationStore>(
   (set) => ({
     data: null,
     get: async (
-      clinical_information_id: string | undefined,
+      clinical_information_id: number | undefined,
       acess_key: string
     ) => {
       if (
