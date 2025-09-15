@@ -119,7 +119,26 @@ export const useUserStore = create<UseUserStore>((set, get) => ({
       },
     })
   },
-  deleteClinicalInformation: async () => {},
+  deleteClinicalInformation: async () => {
+    set({
+      loading: true,
+    })
+    const state = get()
+
+    if (!state.data.clinical_information?.clinical_information_id)
+      throw new Error('Houve um erro! Informação clínica não encontrada')
+
+    await ClinicalInformationService.delete(
+      state.data.clinical_information?.clinical_information_id
+    )
+    set({
+      data: {
+        ...state.data,
+        clinical_information: null,
+      },
+      loading: false,
+    })
+  },
   generateQRCode: async () => {
     set({
       loading: true,

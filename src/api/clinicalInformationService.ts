@@ -49,6 +49,10 @@ export const ClinicalInformationService = {
     )
     return response.data
   },
+  delete: async (id: number) => {
+    const response = await api.delete(`/clinical-information/${id}`)
+    return response.data
+  },
   generateQrCode: async (clinical_information_id: number) => {
     const response = await api.post<QRCode>(
       '/qr-code',

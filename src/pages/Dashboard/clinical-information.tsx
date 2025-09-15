@@ -14,7 +14,7 @@ import {
 } from '@/shared/forms/clinical-information'
 import { useUserStore } from '@/stores/useUserStore'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Save, User } from 'lucide-react'
+import { Save, Trash, User } from 'lucide-react'
 import { useEffect } from 'react'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -59,6 +59,15 @@ export const ClinicalInformationUI = () => {
       if (!isEdit) await userStore.createClinicalInformation(data)
       if (isEdit) await userStore.updateClinicalInformation(data)
       toast.success('Informações clínicas alteradas com sucesso')
+    } catch (error) {
+      errorHandler(error)
+    }
+  }
+
+  const onDelete = async () => {
+    try {
+      await userStore.deleteClinicalInformation()
+      toast('Informação clínica excluída com sucesso!')
     } catch (error) {
       errorHandler(error)
     }
@@ -129,11 +138,17 @@ export const ClinicalInformationUI = () => {
         <RHFormTextarea name="surgery" label="Cirurgias realizadas" />
         <RHFormTextarea name="allergy" label="Alergias" />
       </div>
-      <Button className="mt-4 self-end">
-        <Save />
-        Salvar
-        {isSubmitting && <Spinner />}
-      </Button>
+      <div className="mt-4 flex justify-end gap-2">
+        <Button type="button" variant="destructive" onClick={onDelete}>
+          Apagar <Trash />
+          {userStore.loading && <Spinner />}
+        </Button>
+        <Button>
+          <Save />
+          Salvar
+          {isSubmitting && <Spinner />}
+        </Button>
+      </div>
     </form>
   )
 }
