@@ -3,15 +3,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 import {
   resetPasswordForm,
   type ResetPasswordFormValues,
 } from '@/shared/forms/reset-password'
-import { resetPassword } from '@/api/authService'
 import { Spinner } from '@/components/ui/spinner'
 import { useError } from '@/shared/errors/errorHandler'
+import { AuthService } from '@/api/authService'
 
 export const ResetPasswordForm = () => {
   const methods = useForm<ResetPasswordFormValues>({
@@ -39,7 +38,7 @@ export const ResetPasswordFormUI = () => {
     if (!search.token) return
 
     try {
-      await resetPassword({
+      await AuthService.resetPassword({
         newPassword: data.newPassword,
         token: search.token,
       })

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from 'zod'
 
 export type ClinicalInformationFormValues = z.infer<
@@ -8,9 +9,9 @@ class ClinicalInformationForm {
   public defaultValues: ClinicalInformationFormValues = {
     name: '',
     last_name: '',
-    gender_sex: undefined,
+    gender_sex: undefined as any,
     emergency_contact: '',
-    blood_type: undefined,
+    blood_type: undefined as any,
     allergy: '',
     medicines_used: '',
     illness: '',
