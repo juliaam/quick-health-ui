@@ -1,14 +1,13 @@
 import { RHFormInput } from '@/components/forms/rh-form-input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
-import { type RegisterFormValues } from '@/forms/register'
+import { type RegisterFormValues } from '@/shared/forms/register'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { useNavigate } from '@tanstack/react-router'
-import { loginForm, type LoginFormValues } from '@/forms/login'
-import { AxiosError } from 'axios'
-import { toast } from 'sonner'
+import { loginForm, type LoginFormValues } from '@/shared/forms/login'
 import { Spinner } from '@/components/ui/spinner'
 import { useUserStore } from '@/stores/useUserStore'
+import { useError } from '@/shared/errors/errorHandler'
 
 export const LoginForm = () => {
   const methods = useForm<LoginFormValues>({
@@ -30,19 +29,14 @@ export const LoginFormUI = () => {
     formState: { isSubmitting },
   } = useFormContext<RegisterFormValues>()
   const userStore = useUserStore()
+  const { errorHandler } = useError()
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       await userStore.login(data)
       navigate({ to: '/dashboard' })
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        toast(error.response?.data.message)
-      }
-      if (error instanceof Error) {
-        toast(error.message)
-      }
-      console.error(error)
+    } catch (error) {
+      errorHandler(error)
     }
   }
   const redirectToRegister = () => {

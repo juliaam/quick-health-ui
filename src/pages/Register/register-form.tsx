@@ -1,7 +1,7 @@
 import { RHFormInput } from '@/components/forms/rh-form-input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
-import { registerForm, type RegisterFormValues } from '@/forms/register'
+import { registerForm, type RegisterFormValues } from '@/shared/forms/register'
 import {
   FormProvider,
   useForm,
@@ -13,6 +13,7 @@ import { register } from '@/api/authService'
 import { toast } from 'sonner'
 import { AxiosError } from 'axios'
 import { Spinner } from '@/components/ui/spinner'
+import { useError } from '@/shared/errors/errorHandler'
 
 export const RegisterForm = () => {
   const methods = useForm<RegisterFormValues>({
@@ -29,6 +30,7 @@ export const RegisterForm = () => {
 
 export const RegisterFormUI = () => {
   const navigate = useNavigate()
+  const { errorHandler } = useError()
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -47,14 +49,8 @@ export const RegisterFormUI = () => {
 
       localStorage.setItem('auth-token', response.access_token)
       navigate({ to: '/dashboard' })
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        if (error.response?.data.message) {
-          toast(error.response.data.message)
-        }
-      } else {
-        toast('Houve um erro!')
-      }
+    } catch (error) {
+      errorHandler(error)
     }
   }
 

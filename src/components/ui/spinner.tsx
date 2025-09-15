@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/lib/utils'
 import { RotateCw } from 'lucide-react'
 
 export const Spinner = ({ className }: { className?: string }) => {

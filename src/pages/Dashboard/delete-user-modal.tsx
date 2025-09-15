@@ -1,7 +1,10 @@
 import { RHFormInput } from '@/components/forms/rh-form-input'
 import { Button } from '@/components/ui/button'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
-import { deleteUserForm, type DeleteUserFormValues } from '@/forms/delete-user'
+import {
+  deleteUserForm,
+  type DeleteUserFormValues,
+} from '@/shared/forms/delete-user'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useUserStore } from '@/stores/useUserStore'
 import {
@@ -12,8 +15,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { toast } from 'sonner'
 import { Trash } from 'lucide-react'
+import { useError } from '@/shared/errors/errorHandler'
 
 export const DeleteUserModal = () => (
   <Dialog>
@@ -51,14 +54,14 @@ export const DeleteUserForm = () => {
 
 export const DeleteUserFormUI = () => {
   const userStore = useUserStore()
+  const { errorHandler } = useError()
   const { handleSubmit } = useFormContext<DeleteUserFormValues>()
 
   const onSubmit = async () => {
     try {
       await userStore.onDeleteAccount()
     } catch (error) {
-      console.error(error)
-      toast.error('Houve um erro!')
+      errorHandler(error)
     }
   }
   return (

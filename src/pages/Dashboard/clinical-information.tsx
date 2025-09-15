@@ -1,19 +1,22 @@
-/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { DashboardCard } from '@/components/dashboard-card'
 import { RHFormInput } from '@/components/forms/rh-form-input'
 import { RHFormSelect } from '@/components/forms/rh-form-select'
 import { RHFormTextarea } from '@/components/forms/rh-form-textarea'
 import { Button } from '@/components/ui/button'
-import { GenderSexEnum } from '@/enums/GenderSexEnum'
+import { BloodTypeEnum } from '@/shared/enums/BloodTypeEnum'
+import { GenderSexEnum } from '@/shared/enums/GenderSexEnum'
+import { useError } from '@/shared/errors/errorHandler'
 import {
   clinicalInformationForm,
   type ClinicalInformationFormValues,
-} from '@/forms/clinical-information'
+} from '@/shared/forms/clinical-information'
+import { useUserStore } from '@/stores/useUserStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Save, User } from 'lucide-react'
+import { useEffect } from 'react'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
-
-export const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+import { toast } from 'sonner'
 
 export const ClinicalInformation = () => {
   return (
@@ -40,9 +43,54 @@ export const ClinicalInformationForm = () => {
 }
 
 export const ClinicalInformationUI = () => {
-  const { handleSubmit } = useFormContext<ClinicalInformationFormValues>()
+  const { handleSubmit, reset, setValue } =
+    useFormContext<ClinicalInformationFormValues>()
+  const userStore = useUserStore()
+  const { errorHandler } = useError()
+  const isEdit = !!userStore.data.clinical_information
 
-  const onSubmit = async () => {}
+  const onSubmit = async (data: ClinicalInformationFormValues) => {
+    try {
+      if (!isEdit) await userStore.createClinicalInformation(data)
+      if (isEdit) await userStore.updateClinicalInformation(data)
+      toast.success('Informações clínicas alteradas com sucesso')
+    } catch (error) {
+      errorHandler(error)
+    }
+  }
+
+  useEffect(() => {
+    if (isEdit) {
+      const formData = {
+        name: userStore.data.name,
+        last_name: userStore.data.clinical_information?.last_name || '',
+        gender_sex:
+          userStore.data.clinical_information?.gender_sex || undefined,
+        emergency_contact:
+          userStore.data.clinical_information?.emergency_contact || '',
+        blood_type:
+          userStore.data.clinical_information?.blood_type || undefined,
+        allergy: userStore.data.clinical_information?.allergy || '',
+        medicines_used:
+          userStore.data.clinical_information?.medicines_used || '',
+        illness: userStore.data.clinical_information?.illness || '',
+        surgery: userStore.data.clinical_information?.surgery || '',
+      }
+
+      reset(formData)
+      return
+    }
+
+    setValue('name', userStore.data.name)
+  }, [userStore.data, reset])
+
+  useEffect(() => {
+    const getUser = async () => {
+      await userStore.get()
+    }
+    getUser()
+  }, [])
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
       <div className="grid grid-cols-2 gap-x-16 gap-y-4">
@@ -62,7 +110,7 @@ export const ClinicalInformationUI = () => {
         <RHFormSelect
           name="blood_type"
           label="Tipo sanguíneo"
-          options={bloodTypes.map((bt) => {
+          options={Object.keys(BloodTypeEnum.enum).map((bt) => {
             return {
               label: bt,
               value: bt,

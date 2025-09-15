@@ -1,5 +1,6 @@
 import { redirect } from '@tanstack/react-router'
 import api from './base'
+import type { User } from '@/stores/useUserStore'
 
 export type RegisterDto = {
   name: string
@@ -22,44 +23,37 @@ export type ResetPasswordDto = {
 }
 
 export type ResponseLoginDto = {
-  payload: {
-    id: number
-    email: string
-    name: string
-    photo: string
-  }
+  payload: User
   access_token: string
 }
 
-export const register = async (data: RegisterDto) => {
-  const response = await api.post('/auth/register', data)
-  return response.data
-}
+export const AuthService = {
+  register: async (data: RegisterDto) => {
+    const response = await api.post('/auth/register', data)
+    return response.data
+  },
+  login: async (data: LoginDto) => {
+    const response = await api.post<ResponseLoginDto>('/auth/login', data)
+    return response.data
+  },
+  forgotPassword: async (data: ForgotPasswordDto) => {
+    const response = await api.post('/auth/forgot-password', data)
+    return response.data
+  },
+  resetPassword: async (data: ResetPasswordDto) => {
+    const response = await api.post('/auth/reset-password', data)
+    return response.data
+  },
+  validateToken: async () => {
+    try {
+      const token = localStorage.getItem('auth-token')
 
-export const login = async (data: LoginDto) => {
-  const response = await api.post<ResponseLoginDto>('/auth/login', data)
-  return response.data
-}
+      if (!token) throw redirect({ to: '/login' })
 
-export const forgotPassword = async (data: ForgotPasswordDto) => {
-  const response = await api.post('/auth/forgot-password', data)
-  return response.data
-}
-
-export const resetPassword = async (data: ResetPasswordDto) => {
-  const response = await api.post('/auth/reset-password', data)
-  return response.data
-}
-
-export const validateToken = async () => {
-  try {
-    const token = localStorage.getItem('auth-token')
-
-    if (!token) throw redirect({ to: '/login' })
-
-    await api.get('/auth/validate-token')
-    return true
-  } catch (_er) {
-    throw redirect({ to: '/login' })
-  }
+      await api.get('/auth/validate-token')
+      return true
+    } catch (_er) {
+      throw redirect({ to: '/login' })
+    }
+  },
 }

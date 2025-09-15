@@ -8,10 +8,10 @@ import { forgotPassword as forgotPasswordRequest } from '@/api/authService'
 import {
   forgotPassword,
   type ForgotPasswordValues,
-} from '@/forms/forgot-password'
+} from '@/shared/forms/forgot-password'
 import { toast } from 'sonner'
-import { AxiosError } from 'axios'
 import { Spinner } from '@/components/ui/spinner'
+import { useError } from '@/shared/errors/errorHandler'
 
 export const ForgotPasswordForm = () => {
   const methods = useForm<ForgotPasswordValues>({
@@ -28,6 +28,7 @@ export const ForgotPasswordForm = () => {
 
 export const ForgotPasswordFormUI = () => {
   const navigate = useNavigate()
+  const { errorHandler } = useError()
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -39,15 +40,8 @@ export const ForgotPasswordFormUI = () => {
         email: data.email,
       })
       toast('Veja sua caixa de entrada')
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        if (error.response?.data.message) {
-          toast(error.response.data.message)
-        }
-      } else {
-        console.error(error)
-        toast('Houve um erro!')
-      }
+    } catch (error) {
+      errorHandler(error)
     }
   }
 

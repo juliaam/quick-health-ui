@@ -3,11 +3,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '../../components/ui/popover'
-import { Profile } from '@/icons/Profile'
-import { ProfileAlt } from '@/icons/ProfileAlt'
+import { Profile } from '@/shared/icons/Profile'
+import { ProfileAlt } from '@/shared/icons/ProfileAlt'
 import { DeleteUserModal } from './delete-user-modal'
+import { useUserStore } from '@/stores/useUserStore'
 
 export const ProfilePopover = () => {
+  const userStore = useUserStore()
   return (
     <Popover>
       <PopoverTrigger>
@@ -19,8 +21,7 @@ export const ProfilePopover = () => {
             <ProfileAlt width={54} height={54} />
             <div className="flex flex-col">
               <div className="text-md mt-2 flex gap-1 font-semibold">
-                <span>Júlia</span>
-                <span>Moraes</span>
+                <span>{userStore.data.name}</span>
               </div>
               <span className="text-sm text-gray-800">
                 juliademoraess@gmail.com

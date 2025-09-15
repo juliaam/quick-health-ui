@@ -1,4 +1,4 @@
-import { validateToken } from '@/api/authService'
+import { AuthService } from '@/api/authService'
 import { TopBar } from '@/components/top-bar'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
@@ -13,7 +13,7 @@ export const AuthenticatedLayout = () => {
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async () => {
-    await validateToken()
+    await AuthService.validateToken()
   },
   component: AuthenticatedLayout,
 })

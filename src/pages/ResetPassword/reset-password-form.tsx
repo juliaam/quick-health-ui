@@ -8,9 +8,10 @@ import { toast } from 'sonner'
 import {
   resetPasswordForm,
   type ResetPasswordFormValues,
-} from '@/forms/reset-password'
+} from '@/shared/forms/reset-password'
 import { resetPassword } from '@/api/authService'
 import { Spinner } from '@/components/ui/spinner'
+import { useError } from '@/shared/errors/errorHandler'
 
 export const ResetPasswordForm = () => {
   const methods = useForm<ResetPasswordFormValues>({
@@ -27,6 +28,7 @@ export const ResetPasswordForm = () => {
 
 export const ResetPasswordFormUI = () => {
   const navigate = useNavigate()
+  const { errorHandler } = useError()
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -44,15 +46,8 @@ export const ResetPasswordFormUI = () => {
 
       toast.success('Senha alterada com sucesso!')
       navigate({ to: '/login' })
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        if (error.response?.data.message) {
-          toast(error.response.data.message)
-        }
-      } else {
-        console.error(error)
-        toast('Houve um erro!')
-      }
+    } catch (error) {
+      errorHandler(error)
     }
   }
   const redirectToRegister = () => {
