@@ -4,6 +4,7 @@ import { RHFormInput } from '@/components/forms/rh-form-input'
 import { RHFormSelect } from '@/components/forms/rh-form-select'
 import { RHFormTextarea } from '@/components/forms/rh-form-textarea'
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { BloodTypeEnum } from '@/shared/enums/BloodTypeEnum'
 import { GenderSexEnum } from '@/shared/enums/GenderSexEnum'
 import { useError } from '@/shared/errors/errorHandler'
@@ -43,8 +44,12 @@ export const ClinicalInformationForm = () => {
 }
 
 export const ClinicalInformationUI = () => {
-  const { handleSubmit, reset, setValue } =
-    useFormContext<ClinicalInformationFormValues>()
+  const {
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { isSubmitting },
+  } = useFormContext<ClinicalInformationFormValues>()
   const userStore = useUserStore()
   const { errorHandler } = useError()
   const isEdit = !!userStore.data.clinical_information
@@ -127,6 +132,7 @@ export const ClinicalInformationUI = () => {
       <Button className="mt-4 self-end">
         <Save />
         Salvar
+        {isSubmitting && <Spinner />}
       </Button>
     </form>
   )

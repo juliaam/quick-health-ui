@@ -9,11 +9,9 @@ import {
   useWatch,
 } from 'react-hook-form'
 import { useNavigate } from '@tanstack/react-router'
-import { register } from '@/api/authService'
-import { toast } from 'sonner'
-import { AxiosError } from 'axios'
 import { Spinner } from '@/components/ui/spinner'
 import { useError } from '@/shared/errors/errorHandler'
+import { AuthService } from '@/api/authService'
 
 export const RegisterForm = () => {
   const methods = useForm<RegisterFormValues>({
@@ -39,7 +37,7 @@ export const RegisterFormUI = () => {
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
-      const response = await register({
+      const response = await AuthService.register({
         email: data.email,
         name: data.name,
         password: data.password,

@@ -23,6 +23,7 @@ type FormInputProps<
   required?: boolean
   disabled?: boolean
   type?: string
+  className?: string
 }
 
 export function RHFormInput<
@@ -35,6 +36,7 @@ export function RHFormInput<
   required = false,
   disabled = false,
   type = 'text',
+  className,
 }: FormInputProps<TFieldValues, TName>) {
   const { control } = useFormContext<TFieldValues>()
   const { formItemId } = useFormField()
@@ -57,6 +59,7 @@ export function RHFormInput<
               placeholder={placeholder}
               disabled={disabled}
               type={type}
+              className={className}
             />
           </FormControl>
           <FormMessage />

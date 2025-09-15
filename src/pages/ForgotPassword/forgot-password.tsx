@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { useNavigate } from '@tanstack/react-router'
-import { forgotPassword as forgotPasswordRequest } from '@/api/authService'
 
 import {
   forgotPassword,
@@ -12,6 +11,7 @@ import {
 import { toast } from 'sonner'
 import { Spinner } from '@/components/ui/spinner'
 import { useError } from '@/shared/errors/errorHandler'
+import { AuthService } from '@/api/authService'
 
 export const ForgotPasswordForm = () => {
   const methods = useForm<ForgotPasswordValues>({
@@ -36,7 +36,7 @@ export const ForgotPasswordFormUI = () => {
 
   const onSubmit = async (data: ForgotPasswordValues) => {
     try {
-      await forgotPasswordRequest({
+      await AuthService.forgotPassword({
         email: data.email,
       })
       toast('Veja sua caixa de entrada')

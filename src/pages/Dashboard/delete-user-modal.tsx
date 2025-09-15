@@ -17,6 +17,8 @@ import {
 } from '@/components/ui/dialog'
 import { Trash } from 'lucide-react'
 import { useError } from '@/shared/errors/errorHandler'
+import { Spinner } from '@/components/ui/spinner'
+import { redirect } from '@tanstack/react-router'
 
 export const DeleteUserModal = () => (
   <Dialog>
@@ -55,11 +57,15 @@ export const DeleteUserForm = () => {
 export const DeleteUserFormUI = () => {
   const userStore = useUserStore()
   const { errorHandler } = useError()
-  const { handleSubmit } = useFormContext<DeleteUserFormValues>()
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useFormContext<DeleteUserFormValues>()
 
   const onSubmit = async () => {
     try {
       await userStore.onDeleteAccount()
+      redirect({ to: '/register' })
     } catch (error) {
       errorHandler(error)
     }
@@ -70,8 +76,9 @@ export const DeleteUserFormUI = () => {
         Para confirmar, digite "excluir-{userStore.data.name}" no campo abaixo
       </span>
       <RHFormInput name="confirm" />
-      <Button size="sm" variant="destructive">
+      <Button disabled={isSubmitting} size="sm" variant="destructive">
         Confirmar
+        {isSubmitting && <Spinner />}
       </Button>
     </form>
   )

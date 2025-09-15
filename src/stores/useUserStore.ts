@@ -1,9 +1,8 @@
 import { AuthService } from '@/api/authService'
 import {
   ClinicalInformationService,
-  type ClinicalInformationResponseDto,
   type CreateClinicalInformationDto,
-} from '@/api/clinicalInformation'
+} from '@/api/clinicalInformationService'
 import { ProfileService } from '@/api/profileService'
 import type { BloodTypeEnum } from '@/shared/enums/BloodTypeEnum'
 import type { GenderSexEnum } from '@/shared/enums/GenderSexEnum'
@@ -21,6 +20,7 @@ export type ClinicalInformation = {
   medicines_used?: string
   illness?: string
   surgery?: string
+  qr_code?: QRCode
 }
 
 export type User = {
@@ -31,12 +31,20 @@ export type User = {
   clinical_information: ClinicalInformation | null
 }
 
+export type QRCode = {
+  id_qr_code: number
+  base64: string
+  acess_key?: string
+  clinical_information_id: number
+}
+
 export type LoginDto = {
   email: string
   password: string
 }
 
 export type UseUserStore = {
+  loading: boolean
   data: User
   get: () => Promise<void>
   onDeleteAccount: () => Promise<void>
@@ -48,9 +56,12 @@ export type UseUserStore = {
     data: CreateClinicalInformationDto
   ) => Promise<void>
   deleteClinicalInformation: () => Promise<void>
+  generateQRCode: () => Promise<void>
+  generateAcessKey: () => Promise<void>
 }
 
 export const useUserStore = create<UseUserStore>((set, get) => ({
+  loading: false,
   data: {
     user_id: 0,
     email: '',
@@ -82,7 +93,14 @@ export const useUserStore = create<UseUserStore>((set, get) => ({
     })
   },
   createClinicalInformation: async (data: CreateClinicalInformationDto) => {
-    await ClinicalInformationService.create(data)
+    const state = get()
+    const response = await ClinicalInformationService.create(data)
+    set({
+      data: {
+        ...state.data,
+        clinical_information: response,
+      },
+    })
   },
   updateClinicalInformation: async (data: CreateClinicalInformationDto) => {
     const state = get()
@@ -102,4 +120,49 @@ export const useUserStore = create<UseUserStore>((set, get) => ({
     })
   },
   deleteClinicalInformation: async () => {},
+  generateQRCode: async () => {
+    set({
+      loading: true,
+    })
+    const state = get()
+    const user = state.data
+
+    if (!user.clinical_information?.clinical_information_id)
+      throw new Error('Houve um erro! Informações clínicas não encontradas')
+
+    const response = await ClinicalInformationService.generateQrCode(
+      user.clinical_information.clinical_information_id
+    )
+    set({
+      data: {
+        ...user,
+        clinical_information: {
+          ...user.clinical_information,
+          qr_code: response,
+        },
+      },
+      loading: false,
+    })
+  },
+
+  generateAcessKey: async () => {
+    const state = get()
+    const user = state.data
+
+    if (!user.clinical_information?.qr_code?.id_qr_code)
+      throw new Error('Houve um erro! QR Code não encontrado')
+
+    const response = await ClinicalInformationService.generateAcessKey(
+      user.clinical_information.qr_code?.id_qr_code
+    )
+    set({
+      data: {
+        ...user,
+        clinical_information: {
+          ...user.clinical_information,
+          qr_code: response,
+        },
+      },
+    })
+  },
 }))

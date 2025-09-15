@@ -11,11 +11,11 @@ class DeleteUserForm {
   public validationSchema = (user: User) => {
     return z.object({
       confirm: z.string().refine((value) => {
-        const name = value.slice(8, value.length - 1)
+        const name = value.slice(8, value.length)
 
         if (!value.match('excluir-')) return false
         return name === user.name
-      }, `O valor inserido não é válido. O nome de usuário precisa ser "excluir-${user.name}`),
+      }, `O valor inserido não é válido. O nome de usuário precisa ser "excluir-${user.name}"`),
     })
   }
 }
