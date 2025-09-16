@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DashboardCard } from '@/components/dashboard-card'
 import { RHFormInput } from '@/components/forms/rh-form-input'
@@ -70,16 +69,8 @@ export const ClinicalInformationUI = () => {
   const onDelete = async () => {
     try {
       await userStore.deleteClinicalInformation()
-      reset({
-        allergy: '',
-        blood_type: '',
-        emergency_contact: '',
-        gender_sex: '',
-        illness: '',
-        last_name: '',
-        medicines_used: '',
-        surgery: '',
-      } as any)
+      reset()
+      setValue('name', userStore.data.name)
 
       toast('Informação clínica excluída com sucesso!')
     } catch (error) {
