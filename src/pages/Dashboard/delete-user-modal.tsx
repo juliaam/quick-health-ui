@@ -66,7 +66,7 @@ export const DeleteUserFormUI = () => {
   const onSubmit = async () => {
     try {
       await userStore.onDeleteAccount()
-      navigate({ to: '/login' })
+      navigate({ to: '/register' })
     } catch (error) {
       errorHandler(error)
     }
