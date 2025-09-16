@@ -18,7 +18,7 @@ import {
 import { Trash } from 'lucide-react'
 import { useError } from '@/shared/errors/errorHandler'
 import { Spinner } from '@/components/ui/spinner'
-import { redirect } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 
 export const DeleteUserModal = () => (
   <Dialog>
@@ -61,11 +61,12 @@ export const DeleteUserFormUI = () => {
     handleSubmit,
     formState: { isSubmitting },
   } = useFormContext<DeleteUserFormValues>()
+  const navigate = useNavigate()
 
   const onSubmit = async () => {
     try {
       await userStore.onDeleteAccount()
-      redirect({ to: '/register' })
+      navigate({ to: '/login' })
     } catch (error) {
       errorHandler(error)
     }
