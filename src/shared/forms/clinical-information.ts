@@ -21,12 +21,16 @@ class ClinicalInformationForm {
   public validationSchema = z.object({
     name: z.string().nonempty('Esse campo é obrigatório'),
     last_name: z.string().nonempty('Esse campo é obrigatório'),
-    gender_sex: z.enum(['male', 'female']),
+    gender_sex: z.enum(['male', 'female'], {
+      required_error: 'Gênero é obrigatório',
+    }),
     emergency_contact: z
       .string()
       .nonempty('Esse campo é obrigatório')
       .max(11, 'O número não pode passar de 11 dígitos'),
-    blood_type: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+    blood_type: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], {
+      required_error: 'Tipo sanguíneo é obrigatório',
+    }),
     allergy: z.string().optional(),
     medicines_used: z.string().optional(),
     illness: z.string().optional(),

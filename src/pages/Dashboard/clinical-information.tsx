@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DashboardCard } from '@/components/dashboard-card'
 import { RHFormInput } from '@/components/forms/rh-form-input'
@@ -54,6 +55,8 @@ export const ClinicalInformationUI = () => {
   const { errorHandler } = useError()
   const isEdit = !!userStore.data.clinical_information
 
+  console.log(userStore.data.clinical_information)
+
   const onSubmit = async (data: ClinicalInformationFormValues) => {
     try {
       if (!isEdit) await userStore.createClinicalInformation(data)
@@ -67,6 +70,17 @@ export const ClinicalInformationUI = () => {
   const onDelete = async () => {
     try {
       await userStore.deleteClinicalInformation()
+      reset({
+        allergy: '',
+        blood_type: '',
+        emergency_contact: '',
+        gender_sex: '',
+        illness: '',
+        last_name: '',
+        medicines_used: '',
+        surgery: '',
+      } as any)
+
       toast('Informação clínica excluída com sucesso!')
     } catch (error) {
       errorHandler(error)
