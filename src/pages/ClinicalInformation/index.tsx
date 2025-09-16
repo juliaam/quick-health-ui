@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useSearch } from '@tanstack/react-router'
 import { useError } from '@/shared/errors/errorHandler'
 import { Button } from '@/components/ui/button'
+import { GenderSexEnum } from '@/shared/enums/GenderSexEnum'
 
 export const AcessKey = () => {
   const methods = useForm<AcessKeyFormValues>({
@@ -83,7 +84,10 @@ export function ClinicalInformationView() {
         <div className="grid grid-cols-1 gap-x-12 gap-y-6 text-sm md:grid-cols-2">
           <Field label="Nome" value={info.name} />
           <Field label="Sobrenome" value={info.last_name} />
-          <Field label="Gênero" value={info.gender_sex} />
+          <Field
+            label="Gênero"
+            value={GenderSexEnum.getLabel(info.gender_sex)}
+          />
           <Field label="Contato de emergência" value={info.emergency_contact} />
           <Field label="Tipo sanguíneo" value={info.blood_type} />
           <Field label="Medicamentos utilizados" value={info.medicines_used} />
